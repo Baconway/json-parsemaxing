@@ -1,23 +1,39 @@
 <script lang="ts">
-  let value = $state("I LOVE FRIES");
+  import Render from "./render.svelte";
+  let value = $state('{"I LOVE FRIES" : "a"}');
+  let ShowParsed: boolean = $state(false);
 
-  function AttemptParse(parsingData: string) {
-    try {
-      JSON.parse(parsingData);
-    } catch (error) {
-      if (error instanceof SyntaxError) {
-        console.log(error.name, error.message);
-      }
+  async function CallParse() {
+    const response = await fetch("/api", {
+      method: "POST",
+      body: $state.snapshot(value),
+      headers: {
+        "content-type": "text/plain",
+      },
+    });
+
+    if ((await response.status) == 200) {
+      ShowParsed = await response.json();
     }
   }
 </script>
 
-<h1 class="text-4xl">I COOK FRIES</h1>
+<div class="flex justify-center items-center flex-col">
+  <h1 class="text-4xl pb-5">Bway's JSON Parser</h1>
 
-<textarea
-  class=" resize-none border-4 border-amber-400 border-dashed"
-  bind:value
->
-</textarea>
+  <div class="flex flex-row gap-5">
+    <textarea
+      class="resize-none w-64 h-64 border-4 border-amber-400 border-dashed"
+      bind:value
+      onfocus={() => (ShowParsed = false)}
+    >
+    </textarea>
+    <button class="w-12 h-12 bg-amber-400" onclick={() => CallParse()}>a</button
+    >
+    <div class="w-2 border-4 border-black h-[50vh]"></div>
 
-<button class="w-12 h-12 bg-amber-400" onclick={AttemptParse(value)}>a</button>
+    {#if ShowParsed}
+      <Render />
+    {/if}
+  </div>
+</div>
