@@ -1,16 +1,24 @@
 <script lang="ts">
-  async function GetParsed() {
+  import { ProcessTypes } from "$lib";
+  let content = $state(`<div>`);
+
+  const onComponentLoad = async () => {
     const response = await fetch("/api", {
       method: "GET",
     });
+    const a: Record<string, unknown> = await response.json();
 
-    const a = await response.json();
-    return undefined;
-  }
+    for (let index = 0; index < Object.keys(a).length; index++) {
+      const element: string = Object.keys(a)[index];
+      ProcessTypes(a[element]);
+    }
+  };
+
+  onComponentLoad();
 </script>
 
 <div>
-  {GetParsed()}
+  {["a", "b"]}
   <p>This is the object head</p>
   <p class="pl-5">This is the child</p>
   <p class="pl-5">This is the child</p>

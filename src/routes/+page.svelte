@@ -1,6 +1,8 @@
 <script lang="ts">
   import Render from "./render.svelte";
-  let value = $state('{"I LOVE FRIES" : "a"}');
+  let value = $state(
+    '{"I LOVE FRIES" : true, "b": [1, 2, 3, 4, 5], "c": {"d": "e"}}',
+  );
   let ShowParsed: boolean = $state(false);
 
   async function CallParse() {
